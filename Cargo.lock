@@ -600,8 +600,7 @@ checksum = "71d301d4193d031abdd79ff7e3dd721168a9572ef3fe51a1517aba235bd8f86e"
 [[package]]
 name = "secp256k1"
 version = "0.20.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "733b114f058f260c0af7591434eef4272ae1a8ec2751766d3cb89c6df8d5e450"
+source = "git+https://github.com/rust-bitcoin/rust-secp256k1.git#3c2bee31f23d28e91b25ac263c5ecc1fc7742351"
 dependencies = [
  "bitcoin_hashes",
  "rand 0.6.5",
@@ -612,8 +611,7 @@ dependencies = [
 [[package]]
 name = "secp256k1-sys"
 version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "67e4b6455ee49f5901c8985b88f98fb0a0e1d90a6661f5a03f4888bd987dad29"
+source = "git+https://github.com/rust-bitcoin/rust-secp256k1.git#3c2bee31f23d28e91b25ac263c5ecc1fc7742351"
 dependencies = [
  "cc",
 ]

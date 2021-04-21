@@ -7,6 +7,8 @@ use serde::{Deserialize, Serialize};
 use std::iter::successors;
 use std::{fs, str};
 
+// NOTE: Current serializations in `serialized/` are from 0.20.1 in crates.io.
+
 fn main() {
     let bytes_1_to_32: Vec<u8> = successors(Some(1), |n| Some(n + 1)).take(32).collect();
     let seckey = SecretKey::from_slice(&bytes_1_to_32).unwrap();
@@ -27,30 +29,30 @@ fn verify_all(t: &ToSerialize) {
     verify_from_file("serde_json", serde_json::to_vec, |s| serde_json::from_slice(s), t);
     verify_from_file("bincode", bincode::serialize, |s| bincode::deserialize(s), t);
     verify_from_file("cbor", serde_cbor::to_vec, |s| serde_cbor::from_slice(s), t);
-    // crashes
-    // verify_from_file("yaml", serde_yaml::to_vec, |s|serde_yaml::from_slice(s), t);
+    // crashes on 9.20.1
+    verify_from_file("yaml", serde_yaml::to_vec, |s|serde_yaml::from_slice(s), t);
     verify_from_file("msgpack", rmp_serde::to_vec, |s| rmp_serde::from_slice(s), t);
     verify_from_file("toml", toml::to_vec, |s| toml::from_slice(s), t);
     verify_from_file("serde_json", serde_json::to_vec, |s| serde_json::from_slice(s), t);
-    // crashes
-    // verify_from_file("pickle_proto3_true", |t| serde_pickle::to_vec(t, true), |t| serde_pickle::from_slice(t), t);
-    // crashes
-    // verify_from_file("pickle_proto3_false", |t| serde_pickle::to_vec(t, false), |t| serde_pickle::from_slice(t), t);
+    // crashes on 9.20.1
+    verify_from_file("pickle_proto3_true", |t| serde_pickle::to_vec(t, true), |t| serde_pickle::from_slice(t), t);
+    // crashes on 9.20.1
+    verify_from_file("pickle_proto3_false", |t| serde_pickle::to_vec(t, false), |t| serde_pickle::from_slice(t), t);
     verify_from_file("flexbuffers", |t| flexbuffers::to_vec(*t), |t| flexbuffers::from_slice(t), t);
-    // crashes
-    //verify_from_file("json5", |t| json5::to_string(t).map(String::into_bytes), |t| json5::from_str(str::from_utf8(t).unwrap()), t);
+    // crashes on 9.20.1
+    verify_from_file("json5", |t| json5::to_string(t).map(String::into_bytes), |t| json5::from_str(str::from_utf8(t).unwrap()), t);
 
     verify_from_file("ron", |t| ron::to_string(t).map(String::into_bytes), |t| ron::from_str(str::from_utf8(t).unwrap()), t);
-    // crashes
-    // verify_from_file(
-    //     "bson",
-    //     |t| {
-    //         let mut bson = Vec::with_capacity(128);
-    //         bson::to_document(t).map(|b| b.to_writer(&mut bson).unwrap()).map(|_| bson)
-    //     },
-    //     |mut t|bson::from_document(bson::Document::from_reader(&mut t)?),
-    //     t,
-    // );
+    // crashes on 9.20.1
+    verify_from_file(
+        "bson",
+        |t| {
+            let mut bson = Vec::with_capacity(128);
+            bson::to_document(t).map(|b| b.to_writer(&mut bson).unwrap()).map(|_| bson)
+        },
+        |mut t|bson::from_document(bson::Document::from_reader(&mut t)?),
+        t,
+    );
 }
 
 fn serialize_all(t: &ToSerialize) {
